@@ -44,13 +44,23 @@ public class QuestEncounter
 		switch(actionType)
 		{
 			case ActionType.Left:
-				_leftAction.Invoke(this);
+				_leftAction?.Invoke(this);
 				break;
 			case ActionType.Right:
-				_rightAction.Invoke(this);
+				_rightAction?.Invoke(this);
 				break;
 		}
 		ActionPerformedEvent?.Invoke(this, actionType);
+	}
+
+	public QuestEncounter[] Duplicate(int amount = 1)
+	{
+		QuestEncounter[] encounters = new QuestEncounter[amount];
+		for(int i = 0; i < amount; i++)
+		{
+			encounters[i] = new QuestEncounter(Title, Description, LeftText, _leftAction, RightText, _rightAction);
+		}
+		return encounters;
 	}
 
 	public enum ActionType

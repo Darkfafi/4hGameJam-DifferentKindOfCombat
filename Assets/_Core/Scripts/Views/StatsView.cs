@@ -19,6 +19,7 @@ public class StatsView : MonoBehaviour
 
 	public void SetGameStats(GameStats gameStats)
 	{
+		CompleteTweeners();
 		if(DisplayingGameStats != null)
 		{
 			DisplayingGameStats.StatChangedEvent -= OnStatChangedEvent;
@@ -30,7 +31,6 @@ public class StatsView : MonoBehaviour
 		{
 			DisplayingGameStats.StatChangedEvent += OnStatChangedEvent;
 		}
-
 		GameStats.Stat[] allstats = GameStats.GetAllStatTypes();
 		for(int i = 0; i < allstats.Length; i++)
 		{
@@ -52,18 +52,20 @@ public class StatsView : MonoBehaviour
 
 	private void OnStatChangedEvent(int currentValue, int previousValue, GameStats.Stat stat)
 	{
-		CompleteTweeners();
 		float normalizedValue = (float)currentValue / GameStats.MaxStatValue;
 		float durationBar = 0.5f;
 		switch(stat)
 		{
 			case GameStats.Stat.Health:
+				_healthBar.DOKill();
 				_healthBar.DOScaleX(normalizedValue, durationBar);
 				break;
 			case GameStats.Stat.Objective:
+				_objectiveBar.DOKill();
 				_objectiveBar.DOScaleX(normalizedValue, durationBar);
 				break;
 			case GameStats.Stat.Status:
+				_statusBar.DOKill();
 				_statusBar.DOScaleX(normalizedValue, durationBar);
 				break;
 		}

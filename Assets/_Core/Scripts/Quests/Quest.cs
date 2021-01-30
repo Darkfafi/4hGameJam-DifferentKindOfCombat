@@ -44,15 +44,37 @@ public class Quest
 		GameStats = null;
 	}
 
-	public void AddEncounter(QuestEncounter encounter, int delay)
+	public Quest ShuffleEncounters()
+	{
+		_encounters.Shuffle();
+		return this;
+	}
+
+	public Quest AddEncounters(QuestEncounter[] encounters)
+	{
+		for(int i = 0; i < encounters.Length; i++)
+		{
+			AddEncounter(encounters[i]);
+		}
+		return this;
+	}
+
+	public Quest AddEncounter(QuestEncounter encounter)
+	{
+		_encounters.Add(encounter);
+		return this;
+	}
+
+	public Quest AddEncounter(QuestEncounter encounter, int delay)
 	{
 		if(_encounters.Count == 0)
 		{
-			_encounters.Add(encounter);
+			return AddEncounter(encounter);
 		}
 		else
 		{
 			_encounters.Insert(Mathf.Min(delay, _encounters.Count - 1), encounter);
+			return this;
 		}
 	}
 
@@ -69,6 +91,18 @@ public class Quest
 		questEncounter = null;
 		SetCurrentEncounter(null);
 		return false;
+	}
+
+	public Quest Copy()
+	{
+		QuestEncounter[] encounters = new QuestEncounter[_encounters.Count];
+
+		for(int i = 0; i < encounters.Length; i++)
+		{
+			encounters[i] = _encounters[i].Duplicate(1)[0];
+		}
+
+		return new Quest(Title, Description, encounters);
 	}
 
 	private void SetCurrentEncounter(QuestEncounter questEncounter)

@@ -14,6 +14,7 @@ public class Bootstrapper : MonoBehaviour
 	[Header("Popups")]
 	[SerializeField]
 	private WinPopup _winPopup;
+
 	[SerializeField]
 	private LosePopup _losePopup;
 
@@ -66,6 +67,8 @@ public class Bootstrapper : MonoBehaviour
 		}
 
 		CurrentQuest = quest;
+		CurrentQuest?.ShuffleEncounters();
+
 		_questView.SetQuest(CurrentQuest);
 
 		if(CurrentQuest != null)
@@ -99,14 +102,7 @@ public class Bootstrapper : MonoBehaviour
 
 	private void ShuffleQuests()
 	{
-		int n = _quests.Count;
-		while(n > 1)
-		{
-			int k = UnityEngine.Random.Range(0, n--);
-			Quest kQuest = _quests[k];
-			_quests[k] = _quests[n];
-			_quests[n] = kQuest;
-		}
+		_quests.Shuffle();
 	}
 
 	private void OnStatChangedEvent(int currentValue, int previousValue, GameStats.Stat stat)
@@ -132,10 +128,10 @@ public class Bootstrapper : MonoBehaviour
 			switch(State)
 			{
 				case GameState.Setup:
-					_quests = new List<Quest>(_questsConfig.Quests);
+					_quests = new List<Quest>(_questsConfig.GetAllQuests());
+					ShuffleQuests();
 					break;
 				case GameState.Gameplay:
-					ShuffleQuests();
 					StartQuest(_quests[0]);
 					break;
 			}
