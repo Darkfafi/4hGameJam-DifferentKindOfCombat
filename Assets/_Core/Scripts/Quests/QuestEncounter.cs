@@ -29,6 +29,12 @@ public class QuestEncounter
 		_rightAction = rightAction;
 	}
 
+	public QuestEncounter(string title, string description, string allText, Action<QuestEncounter> allActions)
+		: this(title, description, allText, allActions, allText, allActions)
+	{
+
+	}
+
 	public void Open(Quest parent)
 	{
 		Quest = parent;

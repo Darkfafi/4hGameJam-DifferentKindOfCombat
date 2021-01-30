@@ -1,4 +1,6 @@
-﻿public class QuestsConfig
+﻿using System;
+
+public class QuestsConfig
 {
 	private Quest[] _quests;
 
@@ -17,6 +19,24 @@
 			"The water", (x) =>
 			{
 				x.Quest.GameStats.AffectStat(-10, GameStats.Stat.Objective);
+			}
+		);
+
+		QuestEncounter rescueChildPukePolution = new QuestEncounter("Poluted Child..", "The child who was sick of the poluted water.. died.. and poluted the water more with its body", "Ok..", (x) => 
+		{
+			x.Quest.GameStats.AffectStat(-30, GameStats.Stat.Objective);
+			x.Quest.GameStats.AffectStat(-30, GameStats.Stat.Status);
+		});
+
+		QuestEncounter rescueChildCleanPolution = new QuestEncounter("Rescued Child", "The child you saved came together with his friends to help you clean the poluted water, will you accept?", 
+			"No", (x) => 
+			{
+				x.Quest.GameStats.AffectStat(-5, GameStats.Stat.Status);
+			}, 
+			"Yes", (x) =>
+			{
+				x.Quest.GameStats.AffectStat(20, GameStats.Stat.Objective);
+				x.Quest.GameStats.AffectStat(15, GameStats.Stat.Status);
 			}
 		);
 
@@ -40,7 +60,20 @@
 			// You are in a dungeon, and you have to defeat the slimes
 			new Quest("Slime Polution", "The slimes have poluted the waters.. Help the village by getting rid of the slimes and cleaning the water.", new QuestEncounter[]{})
 			.AddEncounters(CreateFightQuest("a slime", true).Duplicate(5))
-			.AddEncounters(CreateRescue("A child is sick because of the poluted water", false).Duplicate(3))
+			.AddEncounters(CreateRescue("A child is sick because of the poluted water.. He might die..", 
+			x=>
+			{
+				if(UnityEngine.Random.Range(0, 100) < 35)
+				{
+					x.Quest.AddEncounter(rescueChildPukePolution, 5);
+				}
+			}, x =>
+			{ 
+				if(UnityEngine.Random.Range(0, 100) < 40)
+				{
+					x.Quest.AddEncounter(rescueChildCleanPolution, 5);
+				}
+			}).Duplicate(3))
 			.AddEncounters(CreateFightQuest("a thieve", false).Duplicate(5))
 			.AddEncounters(thirstPolution.Duplicate(3))
 			.AddEncounters(healthPotion.Duplicate(2)),
@@ -77,22 +110,19 @@
 		);
 	}
 
-	private static QuestEncounter CreateRescue(string situation, bool affectHealth)
+	private static QuestEncounter CreateRescue(string situation, Action<QuestEncounter> extraContinue = null, Action<QuestEncounter> extraRescue = null)
 	{
 		return new QuestEncounter("Rescue", $"{situation}'. Do you rescue them?",
 			"Continue Quest", (x) =>
 			{
 				x.Quest.GameStats.AffectStat(-10, GameStats.Stat.Status);
 				x.Quest.GameStats.AffectStat(10, GameStats.Stat.Objective);
-
+				extraContinue?.Invoke(x);
 			}, 
 			"Rescue", (x) =>
 			{
-				if(affectHealth)
-				{
-					x.Quest.GameStats.AffectStat(-10, GameStats.Stat.Health);
-				}
 				x.Quest.GameStats.AffectStat(10, GameStats.Stat.Status);
+				extraRescue?.Invoke(x);
 			}
 		);
 	}
