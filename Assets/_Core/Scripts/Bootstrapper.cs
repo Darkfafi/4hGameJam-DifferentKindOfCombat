@@ -39,7 +39,7 @@ public class Bootstrapper : MonoBehaviour
 
 	protected void Awake()
 	{
-		GameStats = new GameStats(50, 50, 50);
+		GameStats = new GameStats(50, 50, 50, 50);
 		_questsConfig = new QuestsConfig();
 
 		GameStats.StatChangedEvent += OnStatChangedEvent;

@@ -874,8 +874,8 @@ PrefabInstance:
     - target: {fileID: 9014869592816522475, guid: 46d1311b2d7b7da4a931057e68c12fde,
         type: 3}
       propertyPath: m_Text
-      value: In this game you have to keep all your stats in balance. When a state
-        reaches one of the 2 sides, you loose. Complete all the quests to win!
+      value: In this game you have to keep all your stats in balance. When a stat
+        reaches one of the 2 sides, you lose. Complete all the quests to win!
       objectReference: {fileID: 0}
     - target: {fileID: 9014869592816522475, guid: 46d1311b2d7b7da4a931057e68c12fde,
         type: 3}

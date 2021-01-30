@@ -59,12 +59,17 @@ public class QuestEncounter
 		ActionPerformedEvent?.Invoke(this, actionType);
 	}
 
+	public QuestEncounter Copy()
+	{
+		return new QuestEncounter(Title, Description, LeftText, _leftAction, RightText, _rightAction);
+	}
+
 	public QuestEncounter[] Duplicate(int amount = 1)
 	{
 		QuestEncounter[] encounters = new QuestEncounter[amount];
 		for(int i = 0; i < amount; i++)
 		{
-			encounters[i] = new QuestEncounter(Title, Description, LeftText, _leftAction, RightText, _rightAction);
+			encounters[i] = Copy();
 		}
 		return encounters;
 	}

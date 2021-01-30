@@ -23,16 +23,22 @@ public class GameStats
 		get; private set;
 	}
 
+	public int Resources
+	{
+		get; private set;
+	}
+
 	public static Stat[] GetAllStatTypes()
 	{
 		return Enum.GetValues(typeof(Stat)) as Stat[];
 	}
 
-	public GameStats(int startHealth, int startObjective, int startStatus)
+	public GameStats(int startHealth, int startObjective, int startStatus, int startResources)
 	{
 		Health = startHealth;
 		Objective = startObjective;
 		Status = startStatus;
+		Resources = startResources;
 	}
 
 	public int GetStat(Stat stat)
@@ -45,6 +51,8 @@ public class GameStats
 				return Objective;
 			case Stat.Status:
 				return Status;
+			case Stat.Resources:
+				return Resources;
 			default:
 				return 0;
 		}
@@ -67,6 +75,10 @@ public class GameStats
 				oldValue = Status;
 				newValue = Status = Mathf.Clamp(Status + amount, 0, MaxStatValue);
 				break;
+			case Stat.Resources:
+				oldValue = Resources;
+				newValue = Resources = Mathf.Clamp(Resources + amount, 0, MaxStatValue);
+				break;
 		}
 
 		if(oldValue != newValue)
@@ -79,6 +91,7 @@ public class GameStats
 	{
 		Health,
 		Status,
-		Objective
+		Objective,
+		Resources
 	}
 }

@@ -12,6 +12,9 @@ public class StatsView : MonoBehaviour
 	[SerializeField]
 	private Transform _statusBar;
 
+	[SerializeField]
+	private Transform _resourcesBar;
+
 	public GameStats DisplayingGameStats
 	{
 		get; private set;
@@ -48,6 +51,7 @@ public class StatsView : MonoBehaviour
 		_healthBar.DOComplete();
 		_objectiveBar.DOComplete();
 		_statusBar.DOComplete();
+		_resourcesBar.DOComplete();
 	}
 
 	private void OnStatChangedEvent(int currentValue, int previousValue, GameStats.Stat stat)
@@ -67,6 +71,10 @@ public class StatsView : MonoBehaviour
 			case GameStats.Stat.Status:
 				_statusBar.DOKill();
 				_statusBar.DOScaleX(normalizedValue, durationBar);
+				break;
+			case GameStats.Stat.Resources:
+				_resourcesBar.DOKill();
+				_resourcesBar.DOScaleX(normalizedValue, durationBar);
 				break;
 		}
 	}
