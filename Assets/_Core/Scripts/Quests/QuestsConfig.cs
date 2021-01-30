@@ -11,7 +11,7 @@
 			{ 
 				new QuestEncounter("Spotted One!", "Will you attack it?", "No", (x)=>
 				{
-					x.Quest.GameStats.AffectStat(-10, GameStats.Stat.Objective);
+					x.Quest.GameStats.AffectStat(-60, GameStats.Stat.Objective);
 				}, "Yes", (x) =>
 				{
 					x.Quest.GameStats.AffectStat(10, GameStats.Stat.Objective);

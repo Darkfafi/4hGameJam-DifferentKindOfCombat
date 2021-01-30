@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Bootstrapper : MonoBehaviour
 {
@@ -9,6 +10,12 @@ public class Bootstrapper : MonoBehaviour
 
 	[SerializeField]
 	private StatsView _statsView;
+
+	[Header("Popups")]
+	[SerializeField]
+	private WinPopup _winPopup;
+	[SerializeField]
+	private LosePopup _losePopup;
 
 	public GameStats GameStats
 	{
@@ -20,22 +27,34 @@ public class Bootstrapper : MonoBehaviour
 		get; private set;
 	}
 
+	public GameState State
+	{
+		get; private set;
+	} = GameState.None;
+
 	private QuestsConfig _questsConfig;
 
-	private List<Quest> _quests;
+	private List<Quest> _quests = new List<Quest>();
 
 	protected void Awake()
 	{
 		GameStats = new GameStats(50, 50, 50);
 		_questsConfig = new QuestsConfig();
+
+		GameStats.StatChangedEvent += OnStatChangedEvent;
+		_statsView.SetGameStats(GameStats);
+
+		SetGameState(GameState.Setup);
 	}
 
 	protected void Start()
 	{
-		_statsView.SetGameStats(GameStats);
-		_quests = new List<Quest>(_questsConfig.Quests);
-		ShuffleQuests();
-		StartQuest(_quests[0]);
+		SetGameState(GameState.Gameplay);
+	}
+
+	protected void OnDestroy()
+	{
+		GameStats.StatChangedEvent -= OnStatChangedEvent;
 	}
 
 	private void StartQuest(Quest quest)
@@ -59,16 +78,22 @@ public class Bootstrapper : MonoBehaviour
 
 	private void OnQuestCompletedEvent()
 	{
-		if(_quests.Count > 0)
+		if(State == GameState.Gameplay)
 		{
-			// Go to next quest
-			StartQuest(_quests[0]);
-		}
-		else
-		{
-			StartQuest(null);
-			// You have completed the game
-			Debug.Log("Completed the game!!");
+			if(_quests.Count > 0)
+			{
+				// Go to next quest
+				StartQuest(_quests[0]);
+			}
+			else
+			{
+				StartQuest(null);
+				_winPopup.Show(() =>
+				{
+					SetGameState(GameState.Ended);
+					SceneManager.LoadScene(SceneManager.GetActiveScene().name, LoadSceneMode.Single);
+				});
+			}
 		}
 	}
 
@@ -82,5 +107,46 @@ public class Bootstrapper : MonoBehaviour
 			_quests[k] = _quests[n];
 			_quests[n] = kQuest;
 		}
+	}
+
+	private void OnStatChangedEvent(int currentValue, int previousValue, GameStats.Stat stat)
+	{
+		if(State == GameState.Gameplay)
+		{
+			if(currentValue <= 0 || currentValue >= GameStats.MaxStatValue)
+			{
+				_losePopup.Show(() =>
+				{
+					SetGameState(GameState.Ended);
+					SceneManager.LoadScene(SceneManager.GetActiveScene().name, LoadSceneMode.Single);
+				});
+			}
+		}
+	}
+
+	private void SetGameState(GameState gameState)
+	{
+		if(State != gameState)
+		{
+			State = gameState;
+			switch(State)
+			{
+				case GameState.Setup:
+					_quests = new List<Quest>(_questsConfig.Quests);
+					break;
+				case GameState.Gameplay:
+					ShuffleQuests();
+					StartQuest(_quests[0]);
+					break;
+			}
+		}
+	}
+
+	public enum GameState
+	{
+		None,
+		Setup,
+		Gameplay,
+		Ended
 	}
 }

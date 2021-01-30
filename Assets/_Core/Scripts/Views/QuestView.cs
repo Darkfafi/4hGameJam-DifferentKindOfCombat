@@ -27,8 +27,8 @@ public class QuestView : MonoBehaviour
 
 		QuestDisplaying = quest;
 
-		_titleLabel.DOText(QuestDisplaying?.Title ?? "Home", 0.25f);
-		_descriptionLabel.DOText(QuestDisplaying?.Description ?? "Just coming home after a long day at work... Let's relax..", 0.5f);
+		_titleLabel.DOText(QuestDisplaying?.Title ?? "Home", 0.5f);
+		_descriptionLabel.DOText(QuestDisplaying?.Description ?? "Just coming home after a long day at work... Let's relax..", 1f);
 
 		if(QuestDisplaying != null)
 		{

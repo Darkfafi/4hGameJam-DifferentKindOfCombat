@@ -25,10 +25,10 @@ public class EncounterView : MonoBehaviour
 	{
 		EncounterDisplaying = encounter;
 
-		_titleLabel.DOText(EncounterDisplaying?.Title ?? "Home, sweet... ow god", 0.25f);
-		_descriptionLabel.DOText(EncounterDisplaying?.Description ?? "Home is filthy, what do you do?", 0.5f);
-		_leftButtonText.DOText(encounter?.LeftText ?? "Dishes", 0.2f);
-		_rightButtonText.DOText(encounter?.RightText ?? "Dishes", 0.2f);
+		_titleLabel.DOText(EncounterDisplaying?.Title ?? "Home, sweet... ow god", 0.5f);
+		_descriptionLabel.DOText(EncounterDisplaying?.Description ?? "Home is filthy, what do you do?", 1f);
+		_leftButtonText.DOText(encounter?.LeftText ?? "Dishes", 0.25f);
+		_rightButtonText.DOText(encounter?.RightText ?? "Dishes", 0.25f);
 	}
 
 	public void OnLeftPressed()
