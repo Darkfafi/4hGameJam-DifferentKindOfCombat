@@ -1,8 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Quest
 {
+	public delegate void EncounterHandler(QuestEncounter encounter);
+	public event EncounterHandler EncounterSetEvent;
+
+	public event Action QuestCompletedEvent;
+
 	public readonly string Title;
 	public readonly string Description;
 
@@ -34,7 +40,7 @@ public class Quest
 
 	public void DeInit()
 	{
-		CleanCurrentQuest();
+		CleanCurrentEncounter();
 		GameStats = null;
 	}
 
@@ -52,31 +58,50 @@ public class Quest
 
 	public bool TryProgressToNext(out QuestEncounter questEncounter)
 	{
-		CleanCurrentQuest();
+		CleanCurrentEncounter();
 		if(_encounters.Count > 0)
 		{
 			questEncounter = _encounters[0];
 			_encounters.Remove(questEncounter);
-			SetCurrentQuest(questEncounter);
+			SetCurrentEncounter(questEncounter);
 			return true;
 		}
 		questEncounter = null;
+		SetCurrentEncounter(null);
 		return false;
 	}
 
-	private void SetCurrentQuest(QuestEncounter questEncounter)
+	private void SetCurrentEncounter(QuestEncounter questEncounter)
 	{
-		CleanCurrentQuest();
-		CurrentEncounter = questEncounter;
-		CurrentEncounter.Open(this);
+		if(CurrentEncounter != questEncounter)
+		{
+			CleanCurrentEncounter();
+			CurrentEncounter = questEncounter;
+			if(CurrentEncounter != null)
+			{
+				CurrentEncounter.ActionPerformedEvent += OnActionPerformedEvent;
+				CurrentEncounter.Open(this);
+				EncounterSetEvent?.Invoke(CurrentEncounter);
+			}
+		}
 	}
 
-	private void CleanCurrentQuest()
+	private void CleanCurrentEncounter()
 	{
 		if(CurrentEncounter != null)
 		{
+			CurrentEncounter.ActionPerformedEvent -= OnActionPerformedEvent;
 			CurrentEncounter.Close();
 			CurrentEncounter = null;
+			EncounterSetEvent?.Invoke(CurrentEncounter);
+		}
+	}
+
+	private void OnActionPerformedEvent(QuestEncounter encounter, QuestEncounter.ActionType actionType)
+	{
+		if(!TryProgressToNext(out _))
+		{
+			QuestCompletedEvent?.Invoke();
 		}
 	}
 }
