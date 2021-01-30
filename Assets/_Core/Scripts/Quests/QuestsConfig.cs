@@ -59,23 +59,23 @@ public class QuestsConfig
 		{
 			// You are in a dungeon, and you have to defeat the slimes
 			new Quest("Slime Polution", "The slimes have poluted the waters.. Help the village by getting rid of the slimes and cleaning the water.", new QuestEncounter[]{})
-			.AddEncounters(CreateFightQuest("a slime", true).Duplicate(5))
+			.AddEncounters(CreateFightQuest("a slime", true).Duplicate(3))
 			.AddEncounters(CreateRescue("A child is sick because of the poluted water.. He might die..", 
-			x=>
+			x =>
 			{
 				if(UnityEngine.Random.Range(0, 100) < 35)
 				{
-					x.Quest.AddEncounter(rescueChildPukePolution, 5);
+					x.Quest.AddEncounter(rescueChildPukePolution, 3);
 				}
 			}, x =>
 			{ 
 				if(UnityEngine.Random.Range(0, 100) < 40)
 				{
-					x.Quest.AddEncounter(rescueChildCleanPolution, 5);
+					x.Quest.AddEncounter(rescueChildCleanPolution, 3);
 				}
 			}).Duplicate(3))
-			.AddEncounters(CreateFightQuest("a thieve", false).Duplicate(5))
-			.AddEncounters(thirstPolution.Duplicate(3))
+			.AddEncounters(CreateFightQuest("a thieve", false).Duplicate(2))
+			.AddEncounters(thirstPolution.Duplicate(1))
 			.AddEncounters(healthPotion.Duplicate(2)),
 		};
 	}
