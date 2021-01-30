@@ -38,8 +38,21 @@ public class StatsView : MonoBehaviour
 		}
 	}
 
+	protected void OnDestroy()
+	{
+		CompleteTweeners();
+	}
+
+	private void CompleteTweeners()
+	{
+		_healthBar.DOComplete();
+		_objectiveBar.DOComplete();
+		_statusBar.DOComplete();
+	}
+
 	private void OnStatChangedEvent(int currentValue, int previousValue, GameStats.Stat stat)
 	{
+		CompleteTweeners();
 		float normalizedValue = (float)currentValue / GameStats.MaxStatValue;
 		float durationBar = 0.5f;
 		switch(stat)

@@ -23,12 +23,17 @@ public class EncounterView : MonoBehaviour
 
 	public void SetEncounter(QuestEncounter encounter)
 	{
+		CompleteTweeners();
 		EncounterDisplaying = encounter;
-
 		_titleLabel.DOText(EncounterDisplaying?.Title ?? "Home, sweet... ow god", 0.5f);
 		_descriptionLabel.DOText(EncounterDisplaying?.Description ?? "Home is filthy, what do you do?", 1f);
 		_leftButtonText.DOText(encounter?.LeftText ?? "Dishes", 0.25f);
 		_rightButtonText.DOText(encounter?.RightText ?? "Dishes", 0.25f);
+	}
+
+	protected void OnDestroy()
+	{
+		CompleteTweeners();
 	}
 
 	public void OnLeftPressed()
@@ -39,5 +44,13 @@ public class EncounterView : MonoBehaviour
 	public void OnRightPressed()
 	{
 		EncounterDisplaying?.DoAction(QuestEncounter.ActionType.Right);
+	}
+
+	private void CompleteTweeners()
+	{
+		_titleLabel.DOComplete();
+		_descriptionLabel.DOComplete();
+		_leftButtonText.DOComplete();
+		_rightButtonText.DOComplete();
 	}
 }

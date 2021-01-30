@@ -20,6 +20,7 @@ public class QuestView : MonoBehaviour
 
 	public void SetQuest(Quest quest)
 	{
+		CompleteTweeners();
 		if(QuestDisplaying != null)
 		{
 			QuestDisplaying.EncounterSetEvent -= OnEncounterSetEvent;
@@ -34,6 +35,17 @@ public class QuestView : MonoBehaviour
 		{
 			QuestDisplaying.EncounterSetEvent += OnEncounterSetEvent;
 		}
+	}
+
+	protected void OnDestroy()
+	{
+		CompleteTweeners();
+	}
+
+	private void CompleteTweeners()
+	{
+		_titleLabel.DOKill();
+		_descriptionLabel.DOKill();
 	}
 
 	private void OnEncounterSetEvent(QuestEncounter encounter)
