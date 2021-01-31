@@ -243,7 +243,7 @@ public class QuestsConfig
 				{
 					if(RollChance(100 - x.Quest.GameStats.Status))
 					{
-						x.Quest.AddEncounter(CreateRevenge("The warrior you left to die was able to find you through your bad reputation, and seeks revenge"), 4);
+						x.Quest.AddEncounter(CreateRevenge("The warrior you left to die was able to find you through your bad reputation"), 4);
 					}
 				}, x=>
 				{
@@ -260,7 +260,7 @@ public class QuestsConfig
 					x.Quest.GameStats.AffectStat(-DefaultEffectValue, GameStats.Stat.Health);
 					if(RollChance(5))
 					{
-						x.Quest.AddEncounter(CreateRevenge("The bounty you accepted has affected a gang negatively.. They will have their revenge.."), 4);
+						x.Quest.AddEncounter(CreateRevenge("The bounty you accepted has affected a gang negatively.."), 4);
 					}
 				}),
 				CreateBuyWithResources("You see an item in the shop which will help you with your quest", x=> x.Quest.GameStats.AffectStat(DefaultEffectValue, GameStats.Stat.Objective)),
