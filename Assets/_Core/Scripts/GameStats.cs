@@ -33,6 +33,14 @@ public class GameStats
 		return Enum.GetValues(typeof(Stat)) as Stat[];
 	}
 
+	public static void ForEachStat(Action<Stat> action)
+	{
+		foreach(Stat stat in GetAllStatTypes())
+		{
+			action(stat);
+		}
+	}
+
 	public GameStats(int startHealth, int startObjective, int startStatus, int startResources)
 	{
 		Health = startHealth;

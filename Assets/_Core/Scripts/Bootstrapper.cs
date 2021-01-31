@@ -39,7 +39,7 @@ public class Bootstrapper : MonoBehaviour
 
 	protected void Awake()
 	{
-		GameStats = new GameStats(50, 50, 50, 50);
+		GameStats = new GameStats(20, 15, 20, 30);
 		_questsConfig = new QuestsConfig();
 
 		GameStats.StatChangedEvent += OnStatChangedEvent;
@@ -67,7 +67,6 @@ public class Bootstrapper : MonoBehaviour
 		}
 
 		CurrentQuest = quest;
-		CurrentQuest?.ShuffleEncounters();
 
 		_questView.SetQuest(CurrentQuest);
 
@@ -86,7 +85,7 @@ public class Bootstrapper : MonoBehaviour
 			if(_quests.Count > 0)
 			{
 				// Go to next quest
-				StartQuest(_quests[0]);
+				StartQuest(_quests[0].ShuffleEncounters());
 			}
 			else
 			{
@@ -132,7 +131,7 @@ public class Bootstrapper : MonoBehaviour
 					ShuffleQuests();
 					break;
 				case GameState.Gameplay:
-					StartQuest(_quests[0]);
+					StartQuest(QuestsConfig.IntroQuest.CreateQuest());
 					break;
 			}
 		}

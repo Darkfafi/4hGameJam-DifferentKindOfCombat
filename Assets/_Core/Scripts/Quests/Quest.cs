@@ -99,7 +99,7 @@ public class Quest
 
 		for(int i = 0; i < encounters.Length; i++)
 		{
-			encounters[i] = _encounters[i].Duplicate(1)[0];
+			encounters[i] = _encounters[i].Copy();
 		}
 
 		return new Quest(Title, Description, encounters);
