@@ -157,27 +157,27 @@ public class QuestsConfig
 		});
 
 		public static readonly QuestEncounter RescueChildCleanPollution = new QuestEncounter("Rescued Child", "The child you saved came together with his friends to help you clean the polluted water, will you accept?",
-			"No", (x) =>
-			{
-				x.Quest.GameStats.AffectStat(-(int)(DefaultEffectValue * 0.5f), GameStats.Stat.Status);
-			},
 			"Yes", (x) =>
 			{
 				x.Quest.GameStats.AffectStat(DefaultEffectValue * 2, GameStats.Stat.Objective);
 				x.Quest.GameStats.AffectStat((int)(DefaultEffectValue * 1.5f), GameStats.Stat.Status);
+			},
+			"No", (x) =>
+			{
+				x.Quest.GameStats.AffectStat(-(int)(DefaultEffectValue * 0.5f), GameStats.Stat.Status);
 			}
 		);
 
 		public static readonly QuestEncounter ThirstPollution = new QuestEncounter("Thirst", "You are very thirsty, will you be drinking the polluted water?",
-			"No", (x) =>
-			{
-				x.Quest.GameStats.AffectStat(-(int)(DefaultEffectValue * 0.5f), GameStats.Stat.Health);
-
-			},
 			"Yes", (x) =>
 			{
 				x.Quest.GameStats.AffectStat((int)(DefaultEffectValue * 0.5f), GameStats.Stat.Objective);
 				InteractionWithWaterEncounter(x.Quest);
+			},
+			"No", (x) =>
+			{
+				x.Quest.GameStats.AffectStat(-(int)(DefaultEffectValue * 0.5f), GameStats.Stat.Health);
+
 			}
 		);
 
@@ -197,8 +197,8 @@ public class QuestsConfig
 		(
 			"Health Potion", 
 			"You found a health potion, do you wish to drink it?", 
-			"No", null, 
-			"Yes", x => x.Quest.GameStats.AffectStat(DefaultEffectValue * 2, GameStats.Stat.Health)
+			"Yes", x => x.Quest.GameStats.AffectStat(DefaultEffectValue * 2, GameStats.Stat.Health),
+			"No", null
 		);
 
 		public static readonly QuestEncounter ThiefEnemy = CreateFight("a thief", "Pay", x => x.Quest.GameStats.AffectStat(-DefaultEffectValue, GameStats.Stat.Resources));
@@ -207,12 +207,12 @@ public class QuestsConfig
 		(
 			"Inn",
 			"You stumbled upon an inn, do you wish to book a room to rest?",
-			"No", null,
 			"Yes", x => 
 			{
 				x.Quest.GameStats.AffectStat(-DefaultEffectValue, GameStats.Stat.Resources);
 				x.Quest.GameStats.AffectStat(DefaultEffectValue, GameStats.Stat.Health);
-			}
+			},
+			"No", null
 		);
 
 		public static QuestEncounter[] GenerateGenericEncounters(int amount)
@@ -299,15 +299,15 @@ public class QuestsConfig
 		(
 			"Caught!",
 			"The guards saw you steal. Pay, or fight!",
+			"Fight", x =>
+			{
+				x.Quest.GameStats.AffectStat(-DefaultEffectValue, GameStats.Stat.Health);
+				x.Quest.GameStats.AffectStat(-DefaultEffectValue * 2, GameStats.Stat.Status);
+			},
 			"Pay", x =>
 			{
 				x.Quest.GameStats.AffectStat(-DefaultEffectValue, GameStats.Stat.Resources);
 				x.Quest.GameStats.AffectStat(-DefaultEffectValue, GameStats.Stat.Status);
-			},
-			"Fight", x => 
-			{
-				x.Quest.GameStats.AffectStat(-DefaultEffectValue, GameStats.Stat.Health);
-				x.Quest.GameStats.AffectStat(-DefaultEffectValue * 2, GameStats.Stat.Status);
 			}
 		);
 
@@ -390,16 +390,16 @@ public class QuestsConfig
 		public static QuestEncounter CreateFight(string attackerName, string escapeText = "Flee", Action<QuestEncounter> extraEscape = null, Action<QuestEncounter> extraFight = null)
 		{
 			return new QuestEncounter("Battle", $"You encountered {attackerName}. Will you fight?",
-				escapeText, (x) =>
-				{
-					x.Quest.GameStats.AffectStat(-DefaultEffectValue, GameStats.Stat.Status);
-					extraEscape?.Invoke(x);
-				},
 				"Fight", (x) =>
 				{
 					x.Quest.GameStats.AffectStat(-DefaultEffectValue, GameStats.Stat.Health);
 					x.Quest.GameStats.AffectStat((int)(DefaultEffectValue * 0.5f), GameStats.Stat.Status);
 					extraFight?.Invoke(x);
+				},
+				escapeText, (x) =>
+				{
+					x.Quest.GameStats.AffectStat(-DefaultEffectValue, GameStats.Stat.Status);
+					extraEscape?.Invoke(x);
 				}
 			);
 		}
@@ -407,16 +407,16 @@ public class QuestsConfig
 		public static QuestEncounter CreateRescue(string situation, Action<QuestEncounter> extraContinue = null, Action<QuestEncounter> extraRescue = null)
 		{
 			return new QuestEncounter("Rescue", $"{situation}. Do you rescue them?",
+				"Rescue", (x) =>
+				{
+					x.Quest.GameStats.AffectStat(DefaultEffectValue, GameStats.Stat.Status);
+					extraRescue?.Invoke(x);
+				},
 				"Continue Quest", (x) =>
 				{
 					x.Quest.GameStats.AffectStat(-DefaultEffectValue, GameStats.Stat.Status);
 					x.Quest.GameStats.AffectStat((int)(DefaultEffectValue * 0.5f), GameStats.Stat.Objective);
 					extraContinue?.Invoke(x);
-				},
-				"Rescue", (x) =>
-				{
-					x.Quest.GameStats.AffectStat(DefaultEffectValue, GameStats.Stat.Status);
-					extraRescue?.Invoke(x);
 				}
 			);
 		}
